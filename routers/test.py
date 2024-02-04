@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from databases.basedb import engineconn
-from models.models import Test
+from models.test_model import Test
 from sqlalchemy import text
 from pydantic import BaseModel
 
