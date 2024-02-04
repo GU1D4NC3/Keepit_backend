@@ -20,8 +20,8 @@ async def basic_get():
 
 @testrouter.get("/time")
 async def db_time():
-    sql = "SELECT now() as currenttime"
-    return session.execute(text(sql)).fetchone()
+    sql = "SELECT now() as time"
+    return session.execute(text(sql)).mappings().fetchall()
 
 
 @testrouter.get("/demotable")
