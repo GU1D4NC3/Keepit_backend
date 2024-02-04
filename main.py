@@ -12,9 +12,6 @@ tags_metadata = [
     {
         "name":"Test",
         "description":"Examples and Test of basic apis"
-    },
-    {
-        "name":"Finance"
     }
 ]
 
