@@ -1,35 +1,40 @@
 from fastapi import APIRouter
-from databases.basedb import engineconn
+from databases.basedb import EngineConn
 from models.test_model import Test
 from sqlalchemy import text
 from pydantic import BaseModel
+from datetime import datetime
 
-testrouter = APIRouter(
-    prefix="/tests",
-    tags=["Test"]
-)
-
-engine = engineconn()
+router = APIRouter()
+engine = EngineConn()
 session = engine.sessionmaker()
 
 
-@testrouter.get("/test")
+@router.get("/test")
 async def basic_get():
     return {"message": "Hello World"}
 
 
-@testrouter.get("/time")
+@router.get("/time")
 async def db_time():
     sql = "SELECT now() as time"
     return session.execute(text(sql)).mappings().fetchall()
 
 
-@testrouter.get("/demotable")
+@router.get("/utcnow")
+async def utc_int():
+    return {
+        "status": "success",
+        "data": datetime.utcnow().timestamp()
+    }
+
+
+@router.get("/demotable")
 async def basic_table_getter():
     return session.query(Test).all()
 
 
-@testrouter.post("/demotable")
+@router.post("/demotable")
 async def basic_table_getter(title: str):
     data = Test(title=title)
     session.add(data)
@@ -38,8 +43,8 @@ async def basic_table_getter(title: str):
     return data
 
 
-@testrouter.get("/demotable_filter")
-async def basic_table_getter(id):
+@router.get("/demotable_filter")
+async def basic_table_getter_with_filter(id):
     basic_table = session.query(Test).filter(Test.id == id).first()
     return basic_table
 
@@ -48,11 +53,11 @@ class Item(BaseModel):
     title: str
 
 
-@testrouter.post("/postbodytest")
-async def basic_table_getter(item: Item):
+@router.post("/postbodytest")
+async def basic_post(item: Item):
     return item
 
 
-@testrouter.post("/postparamtest")
-async def basic_table_getter(title: str):
+@router.post("/postparamtest")
+async def basic_post_with_param(title: str):
     return {"title": title}

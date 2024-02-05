@@ -1,17 +1,17 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import test
+from routers import auth, test
 
 
 tags_metadata = [
     {
-        "name":"Auth",
-        "description":"Login and authorization"
+        "name": "Auth",
+        "description": "Login and authorization"
     },
     {
-        "name":"Test",
-        "description":"Examples and Test of basic apis"
+        "name": "Test",
+        "description": "Examples and Test of basic apis"
     }
 ]
 
@@ -31,7 +31,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.include_router(test.testrouter)
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(test.router, prefix="/test", tags=["Test"])
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0")
