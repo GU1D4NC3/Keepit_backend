@@ -1,13 +1,12 @@
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, test
+from routers import test, google
 
 
 tags_metadata = [
     {
-        "name": "Auth",
-        "description": "Login and authorization"
+        "name": "Google Auth",
+        "description": "Google Oauth2 authentication"
     },
     {
         "name": "Test",
@@ -31,8 +30,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(google.router, prefix="/google", tags=["Google Auth"])
 app.include_router(test.router, prefix="/test", tags=["Test"])
 
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0")
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
