@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import test, google
+from routers import test, google, auth
 
 
 tags_metadata = [
+    {
+        "name": "Auth",
+        "description": "Oauth2 with jwt"
+    },
     {
         "name": "Google Auth",
         "description": "Google Oauth2 authentication"
@@ -30,6 +34,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(google.router, prefix="/google", tags=["Google Auth"])
 app.include_router(test.router, prefix="/test", tags=["Test"])
 

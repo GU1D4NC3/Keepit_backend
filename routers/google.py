@@ -1,16 +1,11 @@
-from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter
 import requests
-from jose import jwt
-from auth.jwt import create_access_token, verify_access_token
 import configparser
 
 config = configparser.ConfigParser()
 config.read("config.ini")
 account = config["google"]
 router = APIRouter()
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Replace these with your own values from the Google Developer Console
 GOOGLE_CLIENT_ID = account["GOOGLE_CLIENT_ID"]
@@ -43,8 +38,3 @@ async def auth_google(code: str):
         "stauts": "success",
         "user_data": user_info.json()
     }
-
-
-@router.get("/token")
-async def get_token(token: str = Depends(oauth2_scheme)):
-    return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
