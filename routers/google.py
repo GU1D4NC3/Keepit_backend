@@ -91,13 +91,13 @@ async def auth_google_token_verify(token: str):
     if userdata.mom_name:
         return {
             "stauts": "success",
-            "is_registered": False,
-            "message": "Registeration process require",
+            "is_registered": True,
+            "message": "Welcome!",
             "access_token": generated_token
         }
     return {
         "stauts": "success",
-        "is_registered": True,
-        "message": "Welcome!",
+        "is_registered": False,
+        "message": "Registeration process require",
         "access_token": generated_token
     }
