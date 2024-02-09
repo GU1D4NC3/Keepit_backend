@@ -13,6 +13,6 @@ class User(Base):
     locale = Column(TEXT)
     mom_name = Column(TEXT)
     baby_name = Column(TEXT)
-    freg_date = Column(TEXT)
+    preg_date = Column(TEXT)
     birth = Column(TEXT)
     detail = Column(TEXT)
