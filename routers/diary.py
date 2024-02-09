@@ -32,7 +32,7 @@ class DiaryUpdate(BaseModel):
 
 
 @router.post("/insert")
-async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
+async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
                       new_data: NewDiary):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -67,7 +67,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.get("/get_all")
-async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
+async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_user)]):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
         raise HTTPException(
@@ -90,7 +90,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
 
 
 @router.get("/get_filtered")
-async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
+async def get_users_diary_with_date(current_user: Annotated[User, Depends(get_current_user)],
                       startdate: datetime, enddate: datetime):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -116,7 +116,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.put("/update")
-async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
+async def update_diary(current_user: Annotated[User, Depends(get_current_user)],
                       update_data: DiaryUpdate):
     user_account = session.query(User).filter(User.id == current_user).first()
     diary = session.query(Diary).filter(Diary.id == update_data.diary_id).first()
@@ -149,7 +149,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.delete("/delete")
-async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
+async def remove_diary(current_user: Annotated[User, Depends(get_current_user)],
                       diaryid: int):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
