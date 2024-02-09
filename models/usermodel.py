@@ -16,3 +16,15 @@ class User(Base):
     preg_date = Column(TEXT)
     birth = Column(TEXT)
     detail = Column(TEXT)
+
+
+class Diary(Base):
+    __tablename__ = "diary"
+    id = Column(INT, nullable=False, primary_key=True, autoincrement=True)
+    user_id = Column(TEXT, nullable=False)
+    title = Column(TEXT, nullable=False)
+    start_date = Column(TEXT, nullable=False)
+    end_date = Column(TEXT)
+    is_fullday = Column(INT)
+    detail = Column(TEXT)
+    icon = Column(INT)

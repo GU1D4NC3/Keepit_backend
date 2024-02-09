@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import test, google, user
+from routers import test, google, user, diary
 
 
 tags_metadata = [
@@ -11,6 +11,10 @@ tags_metadata = [
     {
         "name": "User management",
         "description": "Personal information and Onboarding"
+    },
+    {
+        "name": "Diary",
+        "description": "Diary CRUD"
     },
     {
         "name": "Test",
@@ -36,6 +40,8 @@ app.add_middleware(
 
 app.include_router(google.router, prefix="/google", tags=["Google Auth"])
 app.include_router(user.router, prefix="/user", tags=["User management"])
+app.include_router(diary.router, prefix="/diary", tags=["Diary"])
+
 app.include_router(test.router, prefix="/test", tags=["Test"])
 
 
