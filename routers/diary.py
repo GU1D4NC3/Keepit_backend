@@ -2,6 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter,HTTPException, Depends, status
 from databases.basedb import EngineConn
 from pydantic import BaseModel
+from datetime import datetime
 
 from models.usermodel import User, Diary
 from routers.user import get_current_user
@@ -13,8 +14,8 @@ session = engine.sessionmaker()
 
 class NewDiary(BaseModel):
     title: str
-    start_date: str
-    end_date: str
+    start_date: datetime
+    end_date: datetime
     is_fullday: int
     detail: str
     icon: int
@@ -23,8 +24,8 @@ class NewDiary(BaseModel):
 class DiaryUpdate(BaseModel):
     diary_id:int
     title: str
-    start_date: str
-    end_date: str
+    start_date: datetime
+    end_date: datetime
     is_fullday: int
     detail: str
     icon: int
@@ -85,6 +86,33 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Please check input and try again",
         )
+
+
+
+@router.get("/get_filtered")
+async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
+                      startdate: datetime, enddate: datetime):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        diarys = session.query(Diary).filter(Diary.user_id == current_user,
+                                             Diary.start_date < enddate,
+                                             Diary.end_date > startdate).all()
+        return {
+            "status": "success",
+            "data": diarys
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please check input and try again",
+        )
+
 
 
 @router.put("/update")
