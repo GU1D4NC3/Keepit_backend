@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from jose import jwt, JWTError
 from typing import Annotated
 import configparser
-
+from datetime import date
 router = APIRouter()
 engine = EngineConn()
 session = engine.sessionmaker()
@@ -56,8 +56,8 @@ async def get_current_user(payload: Annotated[str, Depends(JWTBearer())]):
 class Onboarding(BaseModel):
     mom_name: str
     baby_name: str
-    freg_date: str
-    birth: str
+    preg_date: date
+    birth: date
     detail: str
 
 
@@ -75,7 +75,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
                 "picture": user_account.picture,
                 "mom_name": user_account.mom_name,
                 "baby_name": user_account.baby_name,
-                "freg_date": user_account.freg_date,
+                "preg_date": user_account.preg_date,
                 "detail": user_account.detail,
             }
         }
@@ -101,7 +101,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
     try:
         user_account.mom_name = onboardingdata.mom_name
         user_account.baby_name = onboardingdata.baby_name
-        user_account.freg_date = onboardingdata.freg_date
+        user_account.preg_date = onboardingdata.preg_date
         user_account.birth = onboardingdata.birth
         user_account.detail = onboardingdata.detail
         session.add(user_account)
@@ -135,7 +135,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
         user_account.locale = onboardingdata.locale
         user_account.mom_name = onboardingdata.mom_name
         user_account.baby_name = onboardingdata.baby_name
-        user_account.freg_date = onboardingdata.freg_date
+        user_account.preg_date = onboardingdata.preg_date
         user_account.birth = onboardingdata.birth
         user_account.detail = onboardingdata.detail
         session.add(user_account)
