@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import test, google, user, diary
+from routers import test, google, user, diary, vision
+import os
 
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'googlekey.json'
 tags_metadata = [
     {
         "name": "Google Auth",
@@ -15,6 +16,10 @@ tags_metadata = [
     {
         "name": "Diary",
         "description": "Diary CRUD"
+    },
+    {
+        "name": "Google Vision",
+        "description": "Google Vision AI Api"
     },
     {
         "name": "Test",
@@ -41,6 +46,7 @@ app.add_middleware(
 app.include_router(google.router, prefix="/google", tags=["Google Auth"])
 app.include_router(user.router, prefix="/user", tags=["User management"])
 app.include_router(diary.router, prefix="/diary", tags=["Diary"])
+app.include_router(vision.router, prefix="/vision", tags=["Google Vision"])
 
 app.include_router(test.router, prefix="/test", tags=["Test"])
 
