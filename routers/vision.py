@@ -92,7 +92,7 @@ async def image_labels(image:str):
 
 class EatFood(BaseModel):
     label: str
-    amount: str
+    amount: float
 
 
 @router.post("/add_eat", description="추출된(검증된) 라벨을 넣고, 섭취 양을 넣습니다.")
