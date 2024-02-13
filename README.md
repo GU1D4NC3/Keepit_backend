@@ -16,3 +16,6 @@ pip install "passlib[bcrypt]"
 ```
 python -m pip install --upgrade pip
 ```
+
+### setup google api key
+```os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'googlekey.json'```
