@@ -14,7 +14,14 @@ session = engine.sessionmaker()
 
 
 @router.get("/test", description="미리 저장된 테스트 이미지로 데이터를 추출합니다")
-async def test():
+async def test(current_user: Annotated[User, Depends(get_current_user)]):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         output = vision.run_quickstart()
         return {
@@ -31,7 +38,14 @@ async def test():
 
 
 @router.get("/get_label", description="image 에 사진 데이터를 넣어 라벨을 전부 추출합니다.")
-async def get_label(image: str):
+async def get_label(current_user: Annotated[User, Depends(get_current_user)], image: str):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         output = vision.detect_image(image)
         return {
@@ -68,7 +82,14 @@ async def label_check(label: str):
 
 
 @router.get("/image_labels", description="이미지를 통해 라벨을 추출하고, DB 의 라벨과 비교하여 있으면 해당 항목을 꺼내옵니다")
-async def image_labels(image:str):
+async def image_labels(current_user: Annotated[User, Depends(get_current_user)], image: str):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         output = vision.detect_image(image)
         labeled = []
@@ -126,8 +147,39 @@ async def add_eat(current_user: Annotated[User, Depends(get_current_user)], eatf
             detail=f"Please check input and try again {e}",
         )
 
+@router.delete("/delete_eat")
+async def remove_diary(current_user: Annotated[User, Depends(get_current_user)], id: int):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        session.query(EatAmount).filter(EatAmount.id == id,
+                                        EatAmount.user_id == current_user).delete()
+        session.commit()
+        return {
+            "status": "success",
+            "message": f"Eat History deleted"
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please check input and try again",
+        )
+
+
 @router.get("/eat_history_all", description="섭취된 기록을 전부 가져옵니다.")
 async def eat_history_all(current_user: Annotated[User, Depends(get_current_user)]):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         item = session.query(EatAmount).filter(EatAmount.user_id == current_user).all()
         return {
@@ -142,6 +194,13 @@ async def eat_history_all(current_user: Annotated[User, Depends(get_current_user
 
 @router.get("/eat_history_date", description="특정 날짜의 섭취 기록을 가져옵니다")
 async def eat_history_date(current_user: Annotated[User, Depends(get_current_user)], date: datetime):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         sql = (f"SELECT * FROM msdb.eat_amount "
                f"where user_id = '{current_user}' and "
@@ -158,7 +217,16 @@ async def eat_history_date(current_user: Annotated[User, Depends(get_current_use
         )
 
 @router.get("/eat_history_term", description="특정 기간의 섭취 기록을 가져옵니다")
-async def eat_history_term(current_user: Annotated[User, Depends(get_current_user)], start_date: datetime, end_date:datetime):
+async def eat_history_term(current_user: Annotated[User, Depends(get_current_user)],
+                           start_date: datetime,
+                           end_date: datetime):
+    user_account = session.query(User).filter(User.id == current_user).first()
+    if user_account is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         sql = (f"SELECT * FROM msdb.eat_amount "
                f"where user_id = '{current_user}' "
