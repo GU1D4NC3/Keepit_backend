@@ -2,7 +2,6 @@ from typing import Annotated
 from fastapi import APIRouter,HTTPException, Depends, status
 from databases.basedb import EngineConn
 from pydantic import BaseModel
-from datetime import datetime
 from sqlalchemy import text
 
 from models.quizmodel import Quiz
@@ -62,8 +61,8 @@ async def insert_quiz(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.delete("/delete", description="퀴즈 제거 기능")
-async def remove_diary(current_user: Annotated[User, Depends(get_current_user)],
+@router.delete("/delete", description="퀴즈 제거 기능  (관리자 전용)")
+async def remove_quiz(current_user: Annotated[User, Depends(get_current_user)],
                       quizid: int):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -87,7 +86,7 @@ async def remove_diary(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.put("/update" , description="퀴즈 수정 기능 (관리자 전용)")
-async def update_diary(current_user: Annotated[User, Depends(get_current_user)],
+async def update_quiz(current_user: Annotated[User, Depends(get_current_user)],
                       update_data: UpdateQuiz):
     user_account = session.query(User).filter(User.id == current_user).first()
     quiz = session.query(Quiz).filter(Quiz.id == update_data.quiz_id).first()
@@ -118,7 +117,7 @@ async def update_diary(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.get("/random", description="랜덤한 퀴즈 하나를 불러옴")
-async def get_users_all_diary():
+async def get_randomquiz():
     RandomQuiz = session.query(Quiz).order_by(text("RAND()")).limit(1)
     return {
         "status": "success",

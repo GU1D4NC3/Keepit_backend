@@ -61,7 +61,7 @@ async def insert_news(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.delete("/delete", description="뉴스 제거 기능")
+@router.delete("/delete", description="뉴스 제거 기능 (관리자 전용)")
 async def remove_news(current_user: Annotated[User, Depends(get_current_user)],
                       newsid: int):
     user_account = session.query(User).filter(User.id == current_user).first()
