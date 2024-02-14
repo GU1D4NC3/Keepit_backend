@@ -31,7 +31,7 @@ class DiaryUpdate(BaseModel):
     icon: int
 
 
-@router.post("/insert")
+@router.post("/insert", description="다이어리를 입력합니다.")
 async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
                       new_data: NewDiary):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -66,8 +66,8 @@ async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.get("/get_all")
-async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_user)]):
+@router.get("/all",description="사용자가 입력한 모든 다이어리를 가져옵니다")
+async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_user)],):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
         raise HTTPException(
@@ -89,7 +89,7 @@ async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_
 
 
 
-@router.get("/get_filtered")
+@router.get("/range", description="사용자가 입력한 다이어리중 특정 날짜 범위를 가져옵니다.")
 async def get_users_diary_with_date(current_user: Annotated[User, Depends(get_current_user)],
                       startdate: datetime, enddate: datetime):
     user_account = session.query(User).filter(User.id == current_user).first()
