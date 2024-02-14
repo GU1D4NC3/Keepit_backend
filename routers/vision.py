@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from databases.basedb import EngineConn
 from libs import vision
 from sqlalchemy import text
-from models.food import Food, EatAmount
+from models.foodmodel import Food, EatAmount
 from models.usermodel import User
 from routers.user import get_current_user
 from datetime import datetime
@@ -37,7 +37,7 @@ async def test(current_user: Annotated[User, Depends(get_current_user)]):
         )
 
 
-@router.get("/get_label", description="image 에 사진 데이터를 넣어 라벨을 전부 추출합니다.")
+@router.get("/image/raw", description="image 에 사진 데이터를 넣어 라벨을 전부 추출합니다.")
 async def get_label(current_user: Annotated[User, Depends(get_current_user)], image: str):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -60,7 +60,7 @@ async def get_label(current_user: Annotated[User, Depends(get_current_user)], im
             detail=f"Please check input and try again {e}",
         )
 
-@router.get("/is_label", description="추출된 라벨이 DB 에 있는 항목인지 검증합니다")
+@router.get("/labelcheck", description="추출된 라벨이 DB 에 있는 항목인지 검증합니다")
 async def label_check(label: str):
     try:
         basic_table = session.query(Food).filter(Food.title == label).first()
@@ -81,7 +81,7 @@ async def label_check(label: str):
         )
 
 
-@router.get("/image_labels", description="이미지를 통해 라벨을 추출하고, DB 의 라벨과 비교하여 있으면 해당 항목을 꺼내옵니다")
+@router.get("/image/labels", description="이미지를 통해 라벨을 추출하고, DB 의 라벨과 비교하여 있으면 해당 항목을 꺼내옵니다")
 async def image_labels(current_user: Annotated[User, Depends(get_current_user)], image: str):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -116,7 +116,7 @@ class EatFood(BaseModel):
     amount: float
 
 
-@router.post("/add_eat", description="추출된(검증된) 라벨을 넣고, 섭취 양을 넣습니다.")
+@router.post("/eat/add", description="추출된(검증된) 라벨을 넣고, 섭취 양을 넣습니다.")
 async def add_eat(current_user: Annotated[User, Depends(get_current_user)], eatfood: EatFood):
     label = eatfood.label
     amount = eatfood.amount
@@ -147,7 +147,7 @@ async def add_eat(current_user: Annotated[User, Depends(get_current_user)], eatf
             detail=f"Please check input and try again {e}",
         )
 
-@router.delete("/delete_eat")
+@router.delete("/eat/delete")
 async def remove_diary(current_user: Annotated[User, Depends(get_current_user)], id: int):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -171,7 +171,7 @@ async def remove_diary(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.get("/eat_history_all", description="섭취된 기록을 전부 가져옵니다.")
+@router.get("/eat/all", description="섭취된 기록을 전부 가져옵니다.")
 async def eat_history_all(current_user: Annotated[User, Depends(get_current_user)]):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -192,7 +192,7 @@ async def eat_history_all(current_user: Annotated[User, Depends(get_current_user
             detail=f"Please check input and try again {e}",
         )
 
-@router.get("/eat_history_date", description="특정 날짜의 섭취 기록을 가져옵니다")
+@router.get("/eat/date", description="특정 날짜의 섭취 기록을 가져옵니다")
 async def eat_history_date(current_user: Annotated[User, Depends(get_current_user)], date: datetime):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
@@ -216,7 +216,7 @@ async def eat_history_date(current_user: Annotated[User, Depends(get_current_use
             detail=f"Please check input and try again {e}",
         )
 
-@router.get("/eat_history_term", description="특정 기간의 섭취 기록을 가져옵니다")
+@router.get("/eat/range", description="특정 기간의 섭취 기록을 가져옵니다")
 async def eat_history_term(current_user: Annotated[User, Depends(get_current_user)],
                            start_date: datetime,
                            end_date: datetime):
