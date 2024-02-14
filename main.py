@@ -36,10 +36,10 @@ tags_metadata = [
 ]
 
 app = FastAPI(
-    title='Momsaeng Backend',
-    description='2024 GDSC chellenge Momsaeng Backend',
+    title='MomGround Backend',
+    description='2024 GDSC chellenge MomGround Backend',
     summary="",
-    version="0.0.1",
+    version="0.1.0",
     openapi_tags=tags_metadata,
 )
 
