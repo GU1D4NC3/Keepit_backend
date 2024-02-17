@@ -61,6 +61,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES=
 ### database structure
 please import /sql/MomGroundDatabase.sql to your database
 
+
+## Start
 ### Start application with itself
 ```shell
 python3 main.py
