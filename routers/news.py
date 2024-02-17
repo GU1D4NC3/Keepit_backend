@@ -29,7 +29,7 @@ class UpdateNews(BaseModel):
 
 
 
-@router.post("/insert", description="뉴스 추가 기능 (관리자 전용)")
+@router.post("/insert", description="insert news(admin only)")
 async def insert_news(current_user: Annotated[User, Depends(get_current_user)],
                       new_data: NewNews):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -61,7 +61,7 @@ async def insert_news(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.delete("/delete", description="뉴스 제거 기능 (관리자 전용)")
+@router.delete("/delete", description="delete news(admin only)")
 async def remove_news(current_user: Annotated[User, Depends(get_current_user)],
                       newsid: int):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -85,7 +85,7 @@ async def remove_news(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.put("/update", description="뉴스 수정 기능 (관리자 전용)")
+@router.put("/update", description="edit news(admin only)")
 async def update_News(current_user: Annotated[User, Depends(get_current_user)],
                       update_data: UpdateNews):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -116,7 +116,7 @@ async def update_News(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.get("/random", description="랜덤한 뉴스 하나를 불러옴")
+@router.get("/random", description="get random news")
 async def get_random_news():
     RandomNews = session.query(News).order_by(text("RAND()")).limit(1)
     return {
@@ -124,7 +124,7 @@ async def get_random_news():
         "data": RandomNews[0]
     }
 
-@router.get("/id", description="News ID 로 하나를 불러옴")
+@router.get("/id", description="get news with News ID")
 async def get_selected_news(id:int):
     SelectedNews = session.query(News).filter(News.id == id).first()
     return {
@@ -132,7 +132,7 @@ async def get_selected_news(id:int):
         "data": SelectedNews
     }
 
-@router.get("/date", description="해당 날짜의 뉴스를 가져옴")
+@router.get("/date", description="get news with date")
 async def get_date_news(date: date):
     SelectedNews = session.query(News).filter(text(f"date(created) = '{date}'")).all()
     return {
@@ -140,7 +140,7 @@ async def get_date_news(date: date):
         "data": SelectedNews
     }
 
-@router.get("/range", description="날짜범위내의 뉴스를 가져옴")
+@router.get("/range", description="get news with date range")
 async def get_date_news(start: date, end: date):
     SelectedNews = session.query(News).filter(text(f"date(created) >='{start}' and date(created) <='{end}'")).all()
     return {

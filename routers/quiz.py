@@ -29,7 +29,7 @@ class UpdateQuiz(BaseModel):
 
 
 
-@router.post("/insert", description="퀴즈 추가 기능 (관리자 전용)")
+@router.post("/insert", description="insert quiz (admin only)")
 async def insert_quiz(current_user: Annotated[User, Depends(get_current_user)],
                       new_data: NewQuiz):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -61,7 +61,7 @@ async def insert_quiz(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.delete("/delete", description="퀴즈 제거 기능  (관리자 전용)")
+@router.delete("/delete", description="quiz removal (admin only)")
 async def remove_quiz(current_user: Annotated[User, Depends(get_current_user)],
                       quizid: int):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -85,7 +85,7 @@ async def remove_quiz(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.put("/update" , description="퀴즈 수정 기능 (관리자 전용)")
+@router.put("/update" , description="quiz update (admin only)")
 async def update_quiz(current_user: Annotated[User, Depends(get_current_user)],
                       update_data: UpdateQuiz):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -116,7 +116,7 @@ async def update_quiz(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.get("/random", description="랜덤한 퀴즈 하나를 불러옴")
+@router.get("/random", description="get random quiz")
 async def get_randomquiz():
     RandomQuiz = session.query(Quiz).order_by(text("RAND()")).limit(1)
     return {
@@ -124,7 +124,7 @@ async def get_randomquiz():
         "data": RandomQuiz[0]
     }
 
-@router.get("/id", description="Quiz ID 로 하나를 불러옴")
+@router.get("/id", description="get quiz with quiz id")
 async def get_selected_quiz(id:int):
     RandomQuiz = session.query(Quiz).filter(Quiz.id == id).first()
     return {

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import test, google, user, diary, vision, quiz, news
+from routers import google, user, diary, vision, quiz, news
 import os
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'googlekey.json'
@@ -28,10 +28,6 @@ tags_metadata = [
     {
         "name": "News",
         "description": "News data api"
-    },
-    {
-        "name": "Test",
-        "description": "Examples and Test of basic apis"
     }
 ]
 
@@ -39,7 +35,7 @@ app = FastAPI(
     title='MomGround Backend',
     description='2024 GDSC chellenge MomGround Backend',
     summary="",
-    version="0.1.0",
+    version="0.1.1",
     openapi_tags=tags_metadata,
 )
 
@@ -57,8 +53,6 @@ app.include_router(diary.router, prefix="/diary", tags=["Diary"])
 app.include_router(vision.router, prefix="/vision", tags=["Google Vision"])
 app.include_router(quiz.router, prefix="/quiz", tags=["Quiz"])
 app.include_router(news.router, prefix="/news", tags=["News"])
-
-app.include_router(test.router, prefix="/test", tags=["Test"])
 
 
 if __name__ == "__main__":

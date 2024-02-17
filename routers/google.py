@@ -42,7 +42,7 @@ def create_access_token(data: dict, expires_delta: timedelta):
     return encoded_jwt
 
 
-@router.get("/login")
+@router.get("/login", description="Get google login url")
 async def login_google():
     return {
         "stauts": "success",
@@ -50,7 +50,7 @@ async def login_google():
     }
 
 
-@router.get("/auth_backend")
+@router.get("/auth_backend", description="get google auth through redirect")
 async def auth_get_google_token(code: str):
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
@@ -68,7 +68,7 @@ async def auth_get_google_token(code: str):
     }
 
 
-@router.get("/auth_withtoken")
+@router.get("/auth_withtoken", description="verify google auth and get self authorization")
 async def auth_google_token_verify(token: str):
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
                              headers={"Authorization": f"Bearer {token}"}).json()

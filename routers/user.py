@@ -61,7 +61,7 @@ class Onboarding(BaseModel):
     detail: str
 
 
-@router.get("/userdata")
+@router.get("/userdata", description="get user data")
 async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
     try:
         user_account = session.query(User).filter(User.id == current_user).first()
@@ -87,7 +87,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
         )
         return credentials_exception
 
-@router.post("/onboarding")
+@router.post("/onboarding", description="create userdata through onboarding")
 async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
                       onboardingdata: Onboarding):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -118,7 +118,7 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.post("/userdata/update")
+@router.post("/userdata/update", description="userinfo modification")
 async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
                       onboardingdata: Onboarding):
     user_account = session.query(User).filter(User.id == current_user).first()
