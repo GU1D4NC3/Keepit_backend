@@ -37,6 +37,28 @@ python -m pip install --upgrade pip
 }
 ```
 
+### database requirement
+please import /sql/MomGroundDatabase.sql to your database
+
+### config.ini
+```ini
+[account]
+db_host=
+db_port=
+db_user=
+db_password=
+db_scheme=
+[google]
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=
+[auth]
+SECRET_KEY=
+ALGORITHM=
+ACCESS_TOKEN_EXPIRE_MINUTES=
+```
+
+
 ### Start application with itself
 ```shell
 python3 main.py
@@ -46,6 +68,3 @@ python3 main.py
 ```shell
  uvicorn main:app --port <port>
 ```
-
-### database requirement
-
