@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter
+from pydantic import BaseModel
+from typing import Any;
+# from models.responsemodel import AccessToken
 from models.usermodel import User
 import requests
 from jose import jwt
@@ -42,15 +45,29 @@ def create_access_token(data: dict, expires_delta: timedelta):
     return encoded_jwt
 
 
-@router.get("/login", description="Get google login url")
-async def login_google():
-    return {
-        "stauts": "success",
-        "url": f"{GOOGLE_AUTH_URL}?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
-    }
+class LoginPath(BaseModel):
+    status: str = "success"
+    url: str = "https://accounts.google.com/"
 
 
-@router.get("/auth_backend", description="get google auth through redirect")
+@router.get("/login",
+            description="Get google login url",
+            response_model=LoginPath)
+async def login_google() -> Any:
+    res = LoginPath()
+    res.status = "success"
+    res.url = f"{GOOGLE_AUTH_URL}?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
+    return res
+
+
+class AccessToken(BaseModel):
+    status: str = "success"
+    access_token: str = "abcde"
+
+
+@router.get("/auth_backend",
+            description="get google auth through redirect",
+            response_model=AccessToken)
 async def auth_get_google_token(code: str):
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
@@ -62,13 +79,22 @@ async def auth_get_google_token(code: str):
     }
     response = requests.post(token_url, data=data)
     access_token = response.json().get("access_token")
-    return {
-        "stauts": "success",
-        "access_token": access_token
-    }
+    res = AccessToken()
+    res.status = "success"
+    res.access_token = access_token
+    return res
 
 
-@router.get("/auth_withtoken", description="verify google auth and get self authorization")
+class AuthWithToken(BaseModel):
+    status: str = "success"
+    is_registered: bool = True
+    message: str = "success"
+    access_token: str = "abcde"
+
+
+@router.get("/auth_withtoken",
+            description="verify google auth and get self authorization",
+            response_model=AuthWithToken)
 async def auth_google_token_verify(token: str):
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
                              headers={"Authorization": f"Bearer {token}"}).json()
@@ -88,16 +114,13 @@ async def auth_google_token_verify(token: str):
     generated_token = create_access_token(
         data={"sub": user_info["id"]}, expires_delta=access_token_expires
     )
+    response = AuthWithToken()
+    response.status = "success"
+    response.access_token = generated_token
     if userdata.mom_name:
-        return {
-            "stauts": "success",
-            "is_registered": True,
-            "message": "Welcome!",
-            "access_token": generated_token
-        }
-    return {
-        "stauts": "success",
-        "is_registered": False,
-        "message": "Registeration process require",
-        "access_token": generated_token
-    }
+        response.is_registered = True
+        response.message = f"Welcome {userdata.mom_name}"
+    else:
+        response.is_registered = False
+        response.message = "Require registeration process "
+    return response
