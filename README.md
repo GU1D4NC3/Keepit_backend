@@ -1,15 +1,15 @@
-# Momsaeng Backend
+# MomGround Backend
 
-Fastapi project
-
-Tested with Python 3.11.4
+Tested with Python 3.11.4 Fastapi
 
 
-### REQUIREMENT
+## REQUIREMENT
+
 ```
 pip install -r requirements.txt
 pip install "python-jose[cryptography]"
 pip install "passlib[bcrypt]"
+pip install --upgrade google-cloud-vision
 ```
 
 ### update pip
@@ -17,30 +17,9 @@ pip install "passlib[bcrypt]"
 python -m pip install --upgrade pip
 ```
 
-### setup google api key
-```os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'googlekey.json'```
+## Basic configuration
 
-### googlekey.json example
-```json
-{
-  "type": "service_account",
-  "project_id": "solchell",
-  "private_key_id": "",
-  "private_key": "",
-  "client_email": "",
-  "client_id": "",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "",
-  "universe_domain": "googleapis.com"
-}
-```
-
-### database requirement
-please import /sql/MomGroundDatabase.sql to your database
-
-### config.ini
+### config.ini example
 ```ini
 [account]
 db_host=
@@ -58,6 +37,29 @@ ALGORITHM=
 ACCESS_TOKEN_EXPIRE_MINUTES=
 ```
 
+### googlekey.json example
+```json
+{
+  "type": "service_account",
+  "project_id": "solchell",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "",
+  "client_id": "",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "",
+  "universe_domain": "googleapis.com"
+}
+```
+### setup google api key
+```os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'googlekey.json'```
+
+
+## Database
+### database structure
+please import /sql/MomGroundDatabase.sql to your database
 
 ### Start application with itself
 ```shell
