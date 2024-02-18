@@ -86,7 +86,8 @@ async def insert_nq(data: NewNQ):
         session.close()
         return {
             "status": "success",
-            "message": f"News {data.id} {data.news_title} added"
+            "message": f"News {data.id} {data.news_title} added",
+            "updated_at": f"{datetime.now()}"
         }
     except:
         session.rollback()
