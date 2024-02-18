@@ -6,7 +6,7 @@ from sqlalchemy import text
 from models.foodmodel import Food, EatAmount
 from models.usermodel import User
 from routers.user import get_current_user
-from datetime import datetime
+from datetime import datetime, date
 from pydantic import BaseModel
 router = APIRouter()
 engine = EngineConn()
@@ -193,7 +193,7 @@ async def eat_history_all(current_user: Annotated[User, Depends(get_current_user
         )
 
 @router.get("/eat/date", description="bing eat data with date")
-async def eat_history_date(current_user: Annotated[User, Depends(get_current_user)], date: datetime):
+async def eat_history_date(current_user: Annotated[User, Depends(get_current_user)], date: date = date.today()):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
         raise HTTPException(
@@ -218,8 +218,8 @@ async def eat_history_date(current_user: Annotated[User, Depends(get_current_use
 
 @router.get("/eat/range", description="get eat data with date range")
 async def eat_history_term(current_user: Annotated[User, Depends(get_current_user)],
-                           start_date: datetime,
-                           end_date: datetime):
+                           start_date: date=date.today(),
+                           end_date: date=date.today()):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
         raise HTTPException(
