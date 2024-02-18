@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter,HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status
 from databases.basedb import EngineConn
 from pydantic import BaseModel
 from datetime import datetime, date
@@ -12,6 +12,7 @@ from routers.user import get_current_user
 router = APIRouter()
 engine = EngineConn()
 session = engine.sessionmaker()
+
 
 class NewHospital(BaseModel):
     id: int
@@ -26,7 +27,7 @@ class NewHospital(BaseModel):
 
 @router.post("/update",
              description="insert news or update if exist")
-async def insert_nq(data: NewHospital):
+async def insert_hospital(data: NewHospital):
     try:
         existing_item = session.query(Hospital).filter(Hospital.id == data.id).first()
         if existing_item:
@@ -78,3 +79,28 @@ async def insert_nq(data: NewHospital):
             "status": "failed",
             "message": f"Please check input"
         }
+
+
+@router.get("/nearby",
+            description="get hospital near by geo position, dist 0.1 == 10km")
+async def hospital_nearby(posx: float = 127.5,
+                          posy: float = 37.5,
+                          dist: float = 0.1,
+                          type: str = None):
+    try:
+        type_filter = ""
+        if type:
+            type_filter = f" and type = '{type}' "
+        item = session.query(Hospital).filter(text(f"pos_x > {posx - dist} and pos_x < {posx + dist}"
+                                                   f" and pos_y > {posy - dist} and pos_y <{posy + dist}"
+                                                   f"{type_filter}")).all()
+        return {
+            "status": "success",
+            "length": len(item),
+            "data": item
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please check input and try again",
+        )
