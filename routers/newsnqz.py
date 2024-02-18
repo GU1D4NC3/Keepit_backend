@@ -1,13 +1,10 @@
-from typing import Annotated
-from fastapi import APIRouter,HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, status
 from databases.basedb import EngineConn
 from pydantic import BaseModel
 from datetime import datetime, date
 from sqlalchemy import text
 
 from models.newsnqzmodel import NewsNQz
-from models.usermodel import User
-from routers.user import get_current_user
 
 router = APIRouter()
 engine = EngineConn()
@@ -25,15 +22,6 @@ class NewNQ(BaseModel):
     quiz_detail: str
     quiz_description: str
     quiz_answer: str
-
-
-class UpdateNQ(BaseModel):
-    news_id: int
-    title: str
-    detail: str
-    updated: datetime
-    info: str
-
 
 
 @router.post("/update",
