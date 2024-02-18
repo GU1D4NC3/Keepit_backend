@@ -63,7 +63,7 @@ async def insert_nq(data: NewNQ):
             }
     except Exception as e:
         raise {
-            "status": "Failed",
+            "status": "failed",
             "message": f"Please check input {e}"
         }
     session.flush()
@@ -91,7 +91,7 @@ async def insert_nq(data: NewNQ):
         session.rollback()
         session.close()
         raise {
-            "status": "Failed",
+            "status": "failed",
             "message": f"Please check input"
         }
 
