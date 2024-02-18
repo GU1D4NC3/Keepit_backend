@@ -31,7 +31,18 @@ class DiaryUpdate(BaseModel):
     icon: int
 
 
-@router.post("/insert", description="Insert diary")
+class MessageResp(BaseModel):
+    status: str = "success"
+    message: str = "some messages"
+
+
+class ListData(BaseModel):
+    status: str = "success"
+    data: list | None = None
+
+
+@router.post("/insert", description="Insert diary",
+             response_model=MessageResp)
 async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
                       new_data: NewDiary):
     user_account = session.query(User).filter(User.id == current_user).first()
@@ -55,10 +66,9 @@ async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
         session.add(data)
         session.commit()
         session.close()
-        return {
-            "status": "success",
-            "message": f"diary {new_data.title} added"
-        }
+        res = MessageResp
+        res.message = f"diary {new_data.title} added"
+        return res
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -66,7 +76,9 @@ async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
         )
 
 
-@router.get("/all",description="get all diary imported by user")
+@router.get("/all",
+            description="get all diary imported by user",
+            response_model=ListData)
 async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_user)],):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
