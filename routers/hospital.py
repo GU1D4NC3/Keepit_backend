@@ -28,7 +28,7 @@ class NewHospital(BaseModel):
              description="insert news or update if exist")
 async def insert_nq(data: NewHospital):
     try:
-        existing_item = session.query(NewHospital).filter(NewHospital.id == data.id).first()
+        existing_item = session.query(Hospital).filter(Hospital.id == data.id).first()
         if existing_item:
             # update if duplicated item exist
             existing_item.name = data.name
