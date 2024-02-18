@@ -65,6 +65,7 @@ class Onboarding(BaseModel):
 async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
     try:
         user_account = session.query(User).filter(User.id == current_user).first()
+        session.close()
         return {
             "status": "success",
             "data": {
@@ -91,7 +92,6 @@ async def update_todo(current_user: Annotated[User, Depends(get_current_user)]):
 async def update_todo(current_user: Annotated[User, Depends(get_current_user)],
                       onboardingdata: Onboarding):
     user_account = session.query(User).filter(User.id == current_user).first()
-
     if user_account is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

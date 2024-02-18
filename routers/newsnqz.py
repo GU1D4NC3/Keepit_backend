@@ -120,6 +120,7 @@ async def insert_nq(news_id:int):
 async def get_random_news():
     RandomNews = (session.query(NewsNQz).filter(text("deleted_at is null"))
                   .order_by(text("RAND()")).limit(1))
+    session.close()
     return {
         "status": "success",
         "data": RandomNews[0]
@@ -128,6 +129,7 @@ async def get_random_news():
 @router.get("/id", description="get news with News ID")
 async def get_selected_news(id:int):
     SelectedNews = session.query(NewsNQz).filter(NewsNQz.id == id).first()
+    session.close()
     return {
         "status": "success",
         "data": SelectedNews
@@ -137,6 +139,7 @@ async def get_selected_news(id:int):
 async def get_date_news(date: date=date.today()):
     SelectedNews = (session.query(NewsNQz)
                     .filter(text(f"deleted_at is null and date(updated_at) = '{date}'")).all())
+    session.close()
     return {
         "status": "success",
         "data": SelectedNews
@@ -146,6 +149,7 @@ async def get_date_news(date: date=date.today()):
 async def get_date_news(start: date=date.today(), end: date=date.today()):
     SelectedNews = (session.query(NewsNQz)
                     .filter(text(f"deleted_at is null and date(updated_at) >='{start}' and date(updated_at) <='{end}'")).all())
+    session.close()
     return {
         "status": "success",
         "data": SelectedNews

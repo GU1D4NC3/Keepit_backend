@@ -83,6 +83,7 @@ async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_
         )
     try:
         diarys = session.query(Diary).filter(Diary.user_id == current_user).all()
+        session.close()
         return {
             "status": "success",
             "data": diarys
@@ -109,6 +110,7 @@ async def get_users_diary_with_date(current_user: Annotated[User, Depends(get_cu
         diarys = session.query(Diary).filter(Diary.user_id == current_user,
                                              Diary.start_date < enddate,
                                              Diary.end_date > startdate).all()
+        session.close()
         return {
             "status": "success",
             "data": diarys
@@ -125,8 +127,6 @@ async def get_users_diary_with_date(current_user: Annotated[User, Depends(get_cu
 async def update_diary(current_user: Annotated[User, Depends(get_current_user)],
                       update_data: DiaryUpdate):
     user_account = session.query(User).filter(User.id == current_user).first()
-    diary = session.query(Diary).filter(Diary.id == update_data.diary_id).first()
-
     if user_account is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -134,6 +134,7 @@ async def update_diary(current_user: Annotated[User, Depends(get_current_user)],
             headers={"WWW-Authenticate": "Bearer"},
         )
     try:
+        diary = session.query(Diary).filter(Diary.id == update_data.diary_id).first()
         diary.title = update_data.title
         diary.start_date = update_data.start_date
         diary.end_date = update_data.end_date
@@ -167,6 +168,7 @@ async def remove_diary(current_user: Annotated[User, Depends(get_current_user)],
     try:
         session.query(Diary).filter(Diary.id == diaryid).delete()
         session.commit()
+        session.close()
         return {
             "status": "success",
             "message": f"diary deleted"
