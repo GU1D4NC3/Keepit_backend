@@ -72,3 +72,10 @@ python3 main.py
 ```shell
  uvicorn main:app --port <port>
 ```
+
+
+## App script
+this project is require google app script for update news and quiz
+
+script example file is used to update data
+`appscript/quizdata.gs`
