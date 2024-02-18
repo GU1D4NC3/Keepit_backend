@@ -36,11 +36,6 @@ class MessageResp(BaseModel):
     message: str = "some messages"
 
 
-class ListData(BaseModel):
-    status: str = "success"
-    data: list | None = None
-
-
 @router.post("/insert", description="Insert diary",
              response_model=MessageResp)
 async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
@@ -77,8 +72,7 @@ async def insert_diary(current_user: Annotated[User, Depends(get_current_user)],
 
 
 @router.get("/all",
-            description="get all diary imported by user",
-            response_model=ListData)
+            description="get all diary imported by user")
 async def get_users_all_diary(current_user: Annotated[User, Depends(get_current_user)],):
     user_account = session.query(User).filter(User.id == current_user).first()
     if user_account is None:
