@@ -19,8 +19,8 @@ class NewHospital(BaseModel):
     type: str
     area: str
     address: str
-    pos_x: float
-    pos_y: float
+    pos_x: str
+    pos_y: str
     phone: str
 
 
@@ -35,8 +35,8 @@ async def insert_nq(data: NewHospital):
             existing_item.type = data.type
             existing_item.area = data.area
             existing_item.address = data.address
-            existing_item.pos_x = data.pos_x
-            existing_item.pos_y = data.pos_y
+            existing_item.pos_x = float(data.pos_x)
+            existing_item.pos_y = float(data.pos_y)
             existing_item.phone = data.phone
             session.add(existing_item)
             session.commit()
@@ -58,8 +58,8 @@ async def insert_nq(data: NewHospital):
         type=data.type,
         area=data.area,
         address=data.address,
-        pos_x=data.pos_x,
-        pos_y=data.pos_y,
+        pos_x=float(data.pos_x),
+        pos_y=float(data.pos_y),
         phone=data.phone,
     )
     session.add(new_data)
