@@ -59,7 +59,8 @@ async def insert_nq(data: NewNQ):
             session.close()
             return {
                 "status": "success",
-                "message": f"News {data.id} {data.news_title} updated"
+                "message": f"News {data.id} {data.news_title} updated",
+                "updated_at": f"{datetime.now()}"
             }
     except Exception as e:
         raise {
