@@ -112,7 +112,7 @@ async def insert_nq(news_id:int):
 
 @router.get("/random", description="get random news")
 async def get_random_news():
-    RandomNews = (session.query(NewsNQz).filter(NewsNQz.deleted_at is None)
+    RandomNews = (session.query(NewsNQz).filter(text("deleted_at is null"))
                   .order_by(text("RAND()")).limit(1))
     return {
         "status": "success",
