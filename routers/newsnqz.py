@@ -53,6 +53,7 @@ async def insert_nq(data: NewNQ):
             existing_item.quiz_description = data.quiz_description
             existing_item.quiz_answer = data.quiz_answer
             existing_item.updated_at = datetime.now()
+            existing_item.deleted_at = None
             session.add(existing_item)
             session.commit()
             session.close()
@@ -61,10 +62,10 @@ async def insert_nq(data: NewNQ):
                 "message": f"News {data.id} {data.news_title} updated"
             }
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Please check input and try again {e}",
-        )
+        raise {
+            "status": "Failed",
+            "message": f"Please check input {e}"
+        }
     session.flush()
     new_data = NewsNQz(
         id=data.id,
@@ -89,7 +90,10 @@ async def insert_nq(data: NewNQ):
     except:
         session.rollback()
         session.close()
-        raise HTTPException(status_code=400, detail="ID already exists")
+        raise {
+            "status": "Failed",
+            "message": f"Please check input"
+        }
 
 
 @router.delete("/delete", description="delete news(admin only)")
