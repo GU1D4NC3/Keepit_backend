@@ -59,7 +59,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=
 
 ## Database
 ### database structure
-please import /sql/MomGroundDatabase.sql to your database
+please import ./Keepitscheme.sql to your database
 
 
 ## Start
